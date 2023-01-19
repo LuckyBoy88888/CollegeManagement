@@ -1,15 +1,35 @@
-﻿@model IEnumerable<Magnify.Models.Subject>
-
-@{
+﻿@{
     ViewBag.Title = "Index";
 }
 
 <h2>Subject List</h2>
 
 <div id="content" ng-controller="SubjectController">
-    <div ng-class="result">{{message}}</div>
+    <span ng-show="{{isViewLoading}}" class="viewLoading">
+        <img src="~/Content/images/ng-loader.gif" /> loading ...
+    </span>
+    <div ng-class="{{result}}">{{message}}</div>
+    <hr />
 
-    <a href="/Subject/Create">Create New</a>
+    <form name="frmSubject" class="form-horizontal">
+        <h4>Subject</h4>
+
+        <hr />
+
+        <div class="form-group">
+            <label class="col-md-2">Title</label>
+            <div class="col-md-10">
+                <input type="text" ng-model="custModel.Title" name="Title" required ng-minlength="4" ng-maxlength="14" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" ng-disabled="frmSubject.$invalid" ng-click="saveSubject()" />
+                <input type="submit" value="Update" class="btn btn-default" ng-disabled="frmSubject.$invalid" ng-click="updateSubject()"/>
+            </div>
+        </div>
+    </form>
 
     <h2>All Subjects</h2>
     <table class="table table-striped table-responsive">
@@ -22,9 +42,8 @@
             <tr ng-repeat="subject in ListSubject">
                 <td>{{subject.Title}}</td>
                 <td>
-                    <a ng-href="'/Subject/Edit/' + subject.SubjectID">Edit</a>
-                    <a ng-href="'/Subject/Details/' + subject.SubjectID">Details</a>
-                    <a ng-href="'/Subject/Delete/' + subject.SubjectID">Delete</a>
+                    <a ng-click="getSubject(subject)">Edit</a>
+                    <a ng-click="deleteSubject(subject)">Delete</a>
                 </td>
             </tr>
         </tbody>

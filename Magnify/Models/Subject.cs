@@ -19,6 +19,8 @@ namespace Magnify.Models
         {
             get
             {
+                if (Courses == null) return 0;
+
                 int sum = 0;
                 foreach (var course in Courses)
                 {

@@ -18,7 +18,6 @@ namespace Magnify.Controllers
         // GET: Subject
         public ActionResult Index()
         {
-            //return View(db.Subjects.ToList());
             return View();
         }
 
@@ -38,18 +37,15 @@ namespace Magnify.Controllers
 
 
         // GET: Subject/Details/5
-        public ActionResult Details(int? id)
+        public JsonResult GetByID(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
             Subject subject = db.Subjects.Find(id);
-            if (subject == null)
+            var data = new
             {
-                return HttpNotFound();
-            }
-            return View(subject);
+                SubjectID = subject.SubjectID,
+                Title = subject.Title
+            };
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Subject/Create
@@ -62,74 +58,32 @@ namespace Magnify.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "SubjectID,Title")] Subject subject)
+        public JsonResult Insert([Bind(Include = "SubjectID,Title")] Subject subject)
         {
-            if (ModelState.IsValid)
-            {
-                db.Subjects.Add(subject);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            return View(subject);
+            db.Subjects.Add(subject);
+            db.SaveChanges();
+            return Json(subject, JsonRequestBehavior.AllowGet);
         }
-
-        // GET: Subject/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Subject subject = db.Subjects.Find(id);
-            if (subject == null)
-            {
-                return HttpNotFound();
-            }
-            return View(subject);
-        }
-
+        
         // POST: Subject/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "SubjectID,Title")] Subject subject)
+        public JsonResult Update([Bind(Include = "SubjectID,Title")] Subject subject)
         {
-            if (ModelState.IsValid)
-            {
-                db.Entry(subject).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(subject);
-        }
-
-        // GET: Subject/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Subject subject = db.Subjects.Find(id);
-            if (subject == null)
-            {
-                return HttpNotFound();
-            }
-            return View(subject);
+            db.Entry(subject).State = EntityState.Modified;
+            db.SaveChanges();
+            return Json(subject, JsonRequestBehavior.AllowGet);
         }
 
         // POST: Subject/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        [HttpPost]
+        public JsonResult Delete(int id)
         {
             Subject subject = db.Subjects.Find(id);
             db.Subjects.Remove(subject);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return Json(subject, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

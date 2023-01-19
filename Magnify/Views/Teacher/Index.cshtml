@@ -7,7 +7,7 @@
 <h2>Teacher List</h2>
 
 <div id="content" ng-controller="TeacherController">
-    <span ng-show="isViewLoading" class="viewLoading">
+    <span ng-show="{{isViewLoading}}" class="viewLoading">
         <img src="~/Content/images/ng-loader.gif"> loading ...
     </span>
     <div ng-class="{{result}}">{{message}}</div>
