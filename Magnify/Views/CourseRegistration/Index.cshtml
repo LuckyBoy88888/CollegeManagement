@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h2>CourseRegistration List</h2>
+
+<div class="content" ng-controller="CourseRegistrationController">
+    <div ng-class="result">{{message}}</div>
+
+    <a href="/CourseRegistration/Create">Create New</a>
+
+    <h2>All CourseRegistrations</h2>
+    <table class="table table-striped table-responsive">
+        <thead>
+            <tr>
+                <td>Course Title</td>
+                <td>Student First Name</td>
+                <td>Student Last Name</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="courseRegistration in ListCourseRegistration">
+                <td>{{courseRegistration.CourseTitle}}</td>
+                <td>{{courseRegistration.StudentFirstName}}</td>
+                <td>{{courseRegistration.StudentLastName}}</td>
+                <td>
+                    <a ng-href="'/CourseRegistration/Edit/' + courseRegistration.CourseRegistrationID">Edit</a>
+                    <a ng-href="'/CourseRegistration/Details/' + courseRegistration.CourseRegistrationID">Details</a>
+                    <a ng-href="'/CourseRegistration/Delete/' + courseRegistration.CourseRegistrationID">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/angular.js"></script>
+    <script src="~/ScriptsNg/CourseRegistrationController.js"></script>
+}

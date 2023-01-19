@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Magnify.Models.Student>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Student List</h2>
+
+<div id="content" ng-controller="StudentController">
+    <div ng-class="result">{{message}}</div>
+
+    <a href="/Student/Create">Create New</a>
+
+    <h2>All Students</h2>
+    <table class="table table-striped table-responsive">
+        <thead>
+            <tr>
+                <td>First Name</td>
+                <td>Last Name</td>
+                <td>Grade</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="student in ListStudent">
+                <td>{{student.FirstName}}</td>
+                <td>{{student.LastName}}</td>
+                <td>{{student.Grade}}</td>
+                <td>
+                    <a ng-href="'/Student/Edit/' + student.StudentID">Edit</a>
+                    <a ng-href="'/Student/Details/' + student.StudentID">Details</a>
+                    <a ng-href="'/Student/Delete/' + student.StudentID">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+@section Scripts {
+    <script src="~/Scripts/angular.js"></script>
+    <script src="~/ScriptsNg/StudentController.js"></script>
+}
