@@ -1,16 +1,50 @@
-﻿@model IEnumerable<Magnify.Models.Student>
-
-@{
+﻿@{
     ViewBag.Title = "Index";
 }
 
 <h2>Student List</h2>
 
 <div id="content" ng-controller="StudentController">
-    <div ng-class="result">{{message}}</div>
+    <span ng-show="{{isViewLoading}}" class="viewLoading">
+        <img src="~/Content/images/ng-loader.gif" /> loading...
+    </span>
+    <div ng-class="{{result}}">{{message}}</div>
+    <hr />
 
-    <a href="/Student/Create">Create New</a>
+    <form name="frmStudent" class="form-horizontal" novalidate>
+        <h4>Student</h4>
+        <hr />
 
+        <div class="form-group">
+            <label class="col-md-2">First Name</label>
+            <div class="col-md-10">
+                <input type="text" name="FirstName" ng-model="custModel.FirstName" ng-minlength="4" ng-maxlength="14" required />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2">Last Name</label>
+            <div class="col-md-10">
+                <input type="text" name="LastName" ng-model="custModel.LastName" ng-minlength="4" ng-maxlength="14" required />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2">Grade</label>
+            <div class="col-md-10">
+                <input type="number" name="Grade" ng-model="custModel.Grade" required />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" ng-disabled="frmStudent.$invalid" ng-click="saveStudent()" />
+                <input type="submit" value="Update" class="btn btn-default" ng-disabled="frmStudent.$invalid" ng-click="updateStudent()"/>
+            </div>
+        </div>
+    </form>
+    <hr />
+    
     <h2>All Students</h2>
     <table class="table table-striped table-responsive">
         <thead>
@@ -26,9 +60,8 @@
                 <td>{{student.LastName}}</td>
                 <td>{{student.Grade}}</td>
                 <td>
-                    <a ng-href="'/Student/Edit/' + student.StudentID">Edit</a>
-                    <a ng-href="'/Student/Details/' + student.StudentID">Details</a>
-                    <a ng-href="'/Student/Delete/' + student.StudentID">Delete</a>
+                    <a ng-click="getStudent(student)">Edit</a>
+                    <a ng-click="deleteStudent(student)">Delete</a>
                 </td>
             </tr>
         </tbody>

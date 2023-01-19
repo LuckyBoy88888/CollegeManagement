@@ -18,7 +18,6 @@ namespace Magnify.Controllers
         // GET: Student
         public ActionResult Index()
         {
-            //return View(db.Students.ToList());
             return View();
         }
 
@@ -39,18 +38,18 @@ namespace Magnify.Controllers
         }
 
         // GET: Student/Details/5
-        public ActionResult Details(int? id)
+        [HttpGet]
+        public JsonResult GetByID(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
             Student student = db.Students.Find(id);
-            if (student == null)
+            var data = new
             {
-                return HttpNotFound();
-            }
-            return View(student);
+                StudentID = student.StudentID,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                Grade = student.Grade
+            };
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Student/Create
@@ -63,74 +62,32 @@ namespace Magnify.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "StudentID,FirstName,LastName,Grade")] Student student)
+        public JsonResult Insert([Bind(Include = "StudentID,FirstName,LastName,Grade")] Student student)
         {
-            if (ModelState.IsValid)
-            {
-                db.Students.Add(student);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            return View(student);
-        }
-
-        // GET: Student/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Student student = db.Students.Find(id);
-            if (student == null)
-            {
-                return HttpNotFound();
-            }
-            return View(student);
+            db.Students.Add(student);
+            db.SaveChanges();
+            return Json(student, JsonRequestBehavior.AllowGet);
         }
 
         // POST: Student/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "StudentID,FirstName,LastName,Grade")] Student student)
+        public JsonResult Update([Bind(Include = "StudentID,FirstName,LastName,Grade")] Student student)
         {
-            if (ModelState.IsValid)
-            {
-                db.Entry(student).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(student);
-        }
-
-        // GET: Student/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Student student = db.Students.Find(id);
-            if (student == null)
-            {
-                return HttpNotFound();
-            }
-            return View(student);
+            db.Entry(student).State = EntityState.Modified;
+            db.SaveChanges();
+            return Json(student, JsonRequestBehavior.AllowGet);
         }
 
         // POST: Student/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        [HttpPost]
+        public JsonResult Delete(int id)
         {
             Student student = db.Students.Find(id);
             db.Students.Remove(student);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return Json(student, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)
