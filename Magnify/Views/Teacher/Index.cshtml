@@ -7,9 +7,50 @@
 <h2>Teacher List</h2>
 
 <div id="content" ng-controller="TeacherController">
-    <div ng-class="result">{{message}}</div>
+    <span ng-show="isViewLoading" class="viewLoading">
+        <img src="~/Content/images/ng-loader.gif"> loading ...
+    </span>
+    <div ng-class="{{result}}">{{message}}</div>
+    <hr />
 
-    <a href="/Teacher/Create">Create New</a>
+    <form name="frmTeacher" novalidate>
+        <div class="form-horizontal">
+            <h4>Teacher</h4>
+
+            <div class="form-group">
+                <label class="col-md-2">First Name</label>
+                <div class="col-md-10">
+                    <input class="form-control" type="text" ng-model="custModel.FirstName" name="FirstName" required ng-minlength="4" ng-maxlength="14" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2">Last Name</label>
+                <div class="col-md-10">
+                    <input class="form-control" type="text" ng-model="custModel.LastName" name="LastName" required ng-minlength="4" ng-maxlength="14" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2">SubjectID</label>
+                <div class="col-md-10">
+                    <select class="form-control" ng-model="custModel.SubjectID" name="SubjectID" required>
+                        <option ng-repeat="subject in ListSubject" value="{{subject.SubjectID}}" ng-selected="custModel.SubjectID == subject.SubjectID">
+                            {{subject.Title}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" ng-disabled="frmTeacher.$invalid" class="btn btn-default" ng-click="saveTeacher()" />
+                    <input type="submit" value="Update" ng-disabled="frmTeacher.$invalid" class="btn btn-default" ng-click="updateTeacher()" />
+                </div>
+            </div>
+        </div>
+    </form>
+    <hr />
 
     <h2>All Teachers</h2>
     <table class="table table-striped table-responsive">
@@ -26,9 +67,8 @@
                 <td>{{teacher.FirstName}}</td>
                 <td>{{teacher.LastName}}</td>
                 <td>
-                    <a ng-href="'/Teacher/Edit/' + teacher.TeacherID">Edit</a>
-                    <a ng-href="'/Teacher/Details/' + teacher.TeacherID">Details</a>
-                    <a ng-href="'/Teacher/Delete/' + teacher.TeacherID">Delete</a>
+                    <a href="#" ng-click="getTeacher(teacher)">Edit</a>
+                    <a href="#" ng-click="deleteTeacher(teacher)">Delete</a>
                 </td>
             </tr>
         </tbody>
