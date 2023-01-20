@@ -6,9 +6,36 @@
 <h2>Course List</h2>
 
 <div id="content" ng-controller="CourseController">
-    <div ng-class="result">{{message}}</div>
+    <div ng-class="{{result}}">{{message}}</div>
+    <div>
+        <form name="frmCourse" class="form-horizontal">
+            <div class="form-group">
+                <label for="title" class="control-label col-md-2">Title</label>
+                <div class="col-md-10">
+                    <input name="Title" class="form-control" type="text" ng-model="courseModel.Title" required ng-minlength="4" ng-maxlength="14" />
+                </div>
+            </div>
 
-    <a href="/Course/Create">Create New</a>
+            <div class="form-group">
+                <label for="SubjectID" class="control-label col-md-2">SubjectID</label>
+                <div class="col-md-10">
+                    <select class="form-control" id="SubjectID" name="SubjectID" ng-model="courseModel.SubjectID" required>
+                        <option ng-repeat="item in courseDropdownlist" value="{{item.SubjectID}}" ng-selected="courseModel.SubjectID == item.SubjectID">{{item.Title}}</option>
+                    </select>
+                   
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" ng-click="createCourseForm()" ng-disabled="frmCourse.$invalid" class="btn btn-default" />
+                    <input type="submit" value="Update" ng-click="updateCourseForm()" class="btn btn-default" />
+                </div>                
+            </div>
+        </form>
+    </div>
+    @*<a href="/Course/Create">Create New</a>*@
+    <button ng-click="OpenCreateForm()">Create New</button>
 
     <h2>All Customers</h2>
     <table class="table table-striped table-responsive">
@@ -23,9 +50,10 @@
                 <td>{{course.Title}}</td>
                 <td>{{course.SubjectTitle}}</td>
                 <td>
-                    <a ng-href="'/Course/Edit/' + course.CourseID">Edit</a>
-                    <a ng-href="'/Course/Details/' + course.CourseID">Details</a>
-                    <a ng-href="'/Course/Delete/' + course.CourseID">Delete</a>
+                    <a ng-click="editCourseOpen(course.CourseID)">Edit</a>
+                    <a ng-click="deleteCourse(course.CourseID)">Delete</a>
+                    @*<a ng-href="'/Course/Edit/' + course.CourseID">Edit</a>*@
+                    @*<a ng-href="'/Course/Delete/' + course.CourseID">Delete</a>*@
                 </td>
             </tr>
         </tbody>

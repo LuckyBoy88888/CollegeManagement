@@ -56,10 +56,28 @@ namespace Magnify.Controllers
         // GET: Course/Create
         public ActionResult Create()
         {
-            ViewBag.SubjectID = new SelectList(db.Subjects, "SubjectID", "Title");
+            //ViewBag.SubjectID = new SelectList(db.Subjects, "SubjectID", "Title");
             return View();
         }
-
+        [HttpGet]
+        public JsonResult GetCreate()
+        {
+            var subjects = db.Subjects.ToList();
+            var data = (from host in subjects
+                        select new
+                        {
+                            SubjectID = host.SubjectID,
+                            Title = host.Title
+                        }).ToArray();
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult New([Bind(Include = "CourseID,Title,SubjectID")]Course course)
+        {
+            db.Courses.Add(course);
+            db.SaveChanges();
+            return Json(course, JsonRequestBehavior.AllowGet);
+        }
         // POST: Course/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
@@ -78,20 +96,18 @@ namespace Magnify.Controllers
             return View(course);
         }
 
-        // GET: Course/Edit/5
-        public ActionResult Edit(int? id)
+        [HttpPost]
+        public JsonResult Getcourse(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
             Course course = db.Courses.Find(id);
-            if (course == null)
+            var data = new
             {
-                return HttpNotFound();
-            }
-            ViewBag.SubjectID = new SelectList(db.Subjects, "SubjectID", "Title", course.SubjectID);
-            return View(course);
+                CourseID = course.CourseID,
+                Title = course.Title,
+                SubjectID = course.SubjectID,
+                SubjectTitle = course.Subject.Title
+            };
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         // POST: Course/Edit/5
@@ -110,7 +126,13 @@ namespace Magnify.Controllers
             ViewBag.SubjectID = new SelectList(db.Subjects, "SubjectID", "Title", course.SubjectID);
             return View(course);
         }
-
+        [HttpPost]
+        public JsonResult Update([Bind(Include = "CourseID,Title,SubjectID")]Course course)
+        {
+            db.Entry(course).State = EntityState.Modified;
+            db.SaveChanges();
+            return Json(course, JsonRequestBehavior.AllowGet);
+        }
         // GET: Course/Delete/5
         public ActionResult Delete(int? id)
         {
@@ -126,15 +148,13 @@ namespace Magnify.Controllers
             return View(course);
         }
 
-        // POST: Course/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        [HttpPost]
+        public JsonResult DeleteOne(int id)
         {
             Course course = db.Courses.Find(id);
             db.Courses.Remove(course);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return Json(course, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

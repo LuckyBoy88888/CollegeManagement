@@ -18,8 +18,7 @@ namespace Magnify.Controllers
         // GET: CourseRegistration
         public ActionResult Index()
         {
-            var courseRegistrations = db.CourseRegistrations.Include(c => c.Course).Include(c => c.Student);
-            return View(courseRegistrations.ToList());
+            return View();
         }
 
         // GET: All CourseRegistrations
@@ -54,6 +53,34 @@ namespace Magnify.Controllers
         }
 
         // GET: CourseRegistration/Create
+
+        [HttpGet]
+        public JsonResult GetCourseList()
+        {
+            var courses = db.Courses;
+            var data = (from host in courses
+                        select new
+                        {
+                            CourseID = host.CourseID,
+                            Title = host.Title,
+                            SubjectID = host.SubjectID
+                        }).ToArray();
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public JsonResult GetStudentList()
+        {
+            var students = db.Students;
+            var data = (from host in students
+                        select new
+                        {
+                            StudentID = host.StudentID,
+                            FirstName = host.FirstName,
+                            LastName = host.LastName,
+                            Grade = host.Grade,
+                        }).ToArray();
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult Create()
         {
             ViewBag.CourseID = new SelectList(db.Courses, "CourseID", "Title");
@@ -79,7 +106,13 @@ namespace Magnify.Controllers
             ViewBag.StudentID = new SelectList(db.Students, "StudentID", "FirstName", courseRegistration.StudentID);
             return View(courseRegistration);
         }
-
+        [HttpPost]
+        public JsonResult New([Bind(Include = "CourseRegistrationID,CourseID,StudentID")]CourseRegistration courseRegistration)
+        {
+            db.CourseRegistrations.Add(courseRegistration);
+            db.SaveChanges();
+            return Json(courseRegistration, JsonRequestBehavior.AllowGet);
+        }
         // GET: CourseRegistration/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -114,20 +147,44 @@ namespace Magnify.Controllers
             ViewBag.StudentID = new SelectList(db.Students, "StudentID", "FirstName", courseRegistration.StudentID);
             return View(courseRegistration);
         }
-
-        // GET: CourseRegistration/Delete/5
-        public ActionResult Delete(int? id)
+        [HttpPost]
+        public JsonResult GetcourseReg(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
             CourseRegistration courseRegistration = db.CourseRegistrations.Find(id);
-            if (courseRegistration == null)
+            Course course = db.Courses.Find(courseRegistration.CourseID);
+            Student student = db.Students.Find(courseRegistration.StudentID);
+            var data = new
             {
-                return HttpNotFound();
-            }
-            return View(courseRegistration);
+                CourseRegistrationID = id,
+                CourseID = courseRegistration.CourseID,
+                Course = new
+                {
+                    CourseID = courseRegistration.CourseID,
+                    Title = course.Title
+                },
+                StudentID = courseRegistration.StudentID,
+                Student = new {
+                    StudentID = courseRegistration.StudentID,
+                    FirstName = student.FirstName,
+                },
+            };
+           
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult Update([Bind(Include = "CourseRegistrationID,CourseID,StudentID")] CourseRegistration courseRegistration)
+        {
+            db.Entry(courseRegistration).State = EntityState.Modified;
+            db.SaveChanges();
+            return Json(courseRegistration, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult DeleteOne(int id)
+        {
+            CourseRegistration courseRegistration = db.CourseRegistrations.Find(id);
+            db.CourseRegistrations.Remove(courseRegistration);
+            db.SaveChanges();
+            return Json(courseRegistration, JsonRequestBehavior.AllowGet);
         }
 
         // POST: CourseRegistration/Delete/5

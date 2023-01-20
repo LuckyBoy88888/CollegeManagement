@@ -5,8 +5,32 @@
 <h2>CourseRegistration List</h2>
 
 <div class="content" ng-controller="CourseRegistrationController">
-    <div ng-class="result">{{message}}</div>
+    <div ng-class="{{result}}">{{message}}</div>
+    <form name="frmCourse" class="form-horizontal">
+        <div class="form-group">
+            <label for="title" class="control-label col-md-2">Course</label>
+            <select class="form-control" id="CourseID" name="CourseID" ng-model="courseModel.CourseID" required>
+                <option ng-repeat="item in courseDropdownlist" value="{{item.CourseID}}" ng-selected="courseModel.CourseID == item.CourseID">{{item.Title}}</option>
+            </select>
+        </div>
 
+        <div class="form-group">
+            <label for="SubjectID" class="control-label col-md-2">Student</label>
+            <div class="col-md-10">
+                <select class="form-control" id="StudentID" name="StudentID" ng-model="courseModel.StudentID" required>
+                    <option ng-repeat="item in studentDropdownlist" value="{{item.StudentID}}" ng-selected="courseModel.StudentID == item.StudentID">{{item.FirstName}}</option>
+                </select>
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" ng-click="createCourseRegForm()" ng-disabled="frmCourse.$invalid" class="btn btn-default" />
+                <input type="submit" value="Update" ng-click="updateCourseRegForm()" class="btn btn-default" />
+            </div>
+        </div>
+    </form>
     <a href="/CourseRegistration/Create">Create New</a>
 
     <h2>All CourseRegistrations</h2>
@@ -24,9 +48,8 @@
                 <td>{{courseRegistration.StudentFirstName}}</td>
                 <td>{{courseRegistration.StudentLastName}}</td>
                 <td>
-                    <a ng-href="'/CourseRegistration/Edit/' + courseRegistration.CourseRegistrationID">Edit</a>
-                    <a ng-href="'/CourseRegistration/Details/' + courseRegistration.CourseRegistrationID">Details</a>
-                    <a ng-href="'/CourseRegistration/Delete/' + courseRegistration.CourseRegistrationID">Delete</a>
+                    <a ng-click="editCourseOpen(courseRegistration.CourseRegistrationID)">Edit</a>
+                    <a ng-click="deleteCourseReg(courseRegistration.CourseRegistrationID)">Delete</a>
                 </td>
             </tr>
         </tbody>

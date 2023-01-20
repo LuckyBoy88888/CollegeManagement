@@ -17,12 +17,15 @@ namespace Magnify.Models
         public int SubjectID { get; set; }
         public virtual Subject Subject { get; set; }
 
-        public int NumberOfTeachers { get { return Subject.Teachers.Count; } }
-        public int NumberOfStudents { get { return CourseRegistrations.Count; } }
+        public int NumberOfTeachers { get { return Subject != null ? Subject.Teachers.Count : 0; } }
+        public int NumberOfStudents { get { return CourseRegistrations != null ? CourseRegistrations.Count : 0; } }
         public string AverageGradeOfStudents
         {
             get
             {
+                if (CourseRegistrations == null)
+                    return "0.00";
+
                 int sum = 0;
                 foreach (var courseRegistration in CourseRegistrations)
                 {
